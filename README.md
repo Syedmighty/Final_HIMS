@@ -281,7 +281,15 @@ EOF
 - [ ] Background sync service
 - [ ] Report viewer (PDF export)
 
-### Phase 4: Advanced Features
+### Phase 4: Multi-Device Sync Control (v2.0) - DESIGNED
+- [ ] Device registry with max limit enforcement (default: 5 devices)
+- [ ] License tier system (free/basic/premium/enterprise)
+- [ ] Auto-deactivation of inactive devices
+- [ ] Sync session tracking and analytics
+- [ ] Admin UI for device management
+- [ ] Device approval workflow
+
+### Phase 5: Advanced Features
 - [ ] Barcode/QR scanning
 - [ ] Multi-branch support (hotel chains)
 - [ ] Menu engineering analytics
