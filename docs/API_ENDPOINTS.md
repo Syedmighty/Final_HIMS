@@ -971,7 +971,124 @@ DELETE /api/wastage/:uuid
 
 ---
 
-## **Total API Endpoints: 65+**
+## **11. Locations** (6 endpoints)
+
+### List Locations
+```http
+GET /api/locations?active_only=true&location_type=warehouse
+```
+**Auth:** Required
+
+**Query Parameters:**
+- `active_only`: Filter active locations only
+- `location_type`: warehouse | kitchen | bar | restaurant | store
+
+**Response includes:**
+- Location details
+- Stock summary for each location (products count, total quantity)
+
+### Get Location
+```http
+GET /api/locations/:uuid
+```
+**Auth:** Required
+
+**Response includes:**
+- Location details
+- Stock summary (products count, low stock count)
+- All stock items at this location
+
+### Get Location Stock Summary
+```http
+GET /api/locations/:uuid/stock-summary
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "location": {
+    "uuid": "loc_main",
+    "name": "Main Warehouse",
+    "location_type": "warehouse"
+  },
+  "summary": {
+    "total_products": 50,
+    "total_quantity": 5000,
+    "low_stock_count": 5,
+    "critical_stock_count": 2
+  },
+  "low_stock_items": [
+    {
+      "product_uuid": "prod_001",
+      "product_name": "Rice - Basmati",
+      "sku": "RICE001",
+      "current_stock": 10,
+      "reorder_level": 50,
+      "min_stock_level": 20,
+      "unit": "kg"
+    }
+  ],
+  "out_of_stock_items": [],
+  "alerts": {
+    "low_stock": 5,
+    "out_of_stock": 0,
+    "total_alerts": 5
+  }
+}
+```
+
+### Create Location
+```http
+POST /api/locations
+```
+**Auth:** Required (Manager+)
+
+**Body:**
+```json
+{
+  "name": "Main Warehouse",
+  "location_type": "warehouse",
+  "description": "Primary storage location"
+}
+```
+
+**Validation:**
+- Name must be unique
+- location_type must be valid enum value
+
+### Update Location
+```http
+PUT /api/locations/:uuid
+```
+**Auth:** Required (Manager+)
+
+**Body:**
+```json
+{
+  "name": "Updated Warehouse",
+  "location_type": "warehouse",
+  "description": "Updated description",
+  "is_active": true
+}
+```
+
+### Delete Location
+```http
+DELETE /api/locations/:uuid
+```
+**Auth:** Required (Manager+)
+
+**Important:**
+- Soft delete (sets is_active = 0)
+- Cannot delete location with existing stock
+- Cannot delete location with pending transactions
+- Must transfer or remove stock first
+
+---
+
+## **Total API Endpoints: 71+**
 
 - Authentication: 7
 - Products: 10
@@ -980,10 +1097,11 @@ DELETE /api/wastage/:uuid
 - Transfers: 5
 - Invoices: 7
 - Wastage: 6
+- Locations: 6
 - Devices: 7
 - Sync: 4
 - Health: 3
-- **Coming Soon:** Reports, Recipes, Settings, Locations
+- **Coming Soon:** Reports, Recipes, Settings
 
 ---
 

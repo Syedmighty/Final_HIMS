@@ -26,6 +26,7 @@ const issuesRoutes = require('./routes/issues');
 const transfersRoutes = require('./routes/transfers');
 const invoicesRoutes = require('./routes/invoices');
 const wastageRoutes = require('./routes/wastage');
+const locationsRoutes = require('./routes/locations');
 
 // Initialize Express app
 const app = express();
@@ -92,6 +93,7 @@ app.use('/api/issues', issuesRoutes);
 app.use('/api/transfers', transfersRoutes);
 app.use('/api/invoices', invoicesRoutes);
 app.use('/api/wastage', wastageRoutes);
+app.use('/api/locations', locationsRoutes);
 
 // Root route
 app.get('/', (req, res) => {
