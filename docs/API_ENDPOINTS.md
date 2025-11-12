@@ -840,7 +840,138 @@ DELETE /api/invoices/:uuid
 
 ---
 
-## **Total API Endpoints: 59+**
+## **10. Wastage** (6 endpoints)
+
+### List Wastage Records
+```http
+GET /api/wastage?status=draft&wastage_type=damage&from_date=2025-01-01
+```
+**Auth:** Required
+
+**Query Parameters:**
+- `status`: draft | approved | cancelled
+- `wastage_type`: damage | expiry | spoilage | other
+- `location_uuid`: Filter by location
+- `from_date`, `to_date`: YYYY-MM-DD
+
+### Get Wastage Record
+```http
+GET /api/wastage/:uuid
+```
+**Auth:** Required
+
+**Response includes:**
+- Wastage header with location info
+- All wastage items with product details
+- Items count
+
+### Create Wastage Record
+```http
+POST /api/wastage
+```
+**Auth:** Required (Staff+)
+
+**Body:**
+```json
+{
+  "location_uuid": "loc_main",
+  "wastage_date": "2025-11-12",
+  "wastage_type": "expiry",
+  "notes": "Expired items removed",
+  "items": [
+    {
+      "product_uuid": "prod_001",
+      "quantity": 10,
+      "unit_id": 1,
+      "reason": "Expired on 2025-11-10"
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Wastage record created successfully",
+  "wastage": {
+    "uuid": "wst_xxx",
+    "wastage_number": "WST0001"
+  },
+  "warning": "Some items have quantities exceeding available stock",
+  "insufficient_items": [
+    {
+      "product": "Rice - Basmati",
+      "required": 10,
+      "available": 5
+    }
+  ]
+}
+```
+
+**Note:** Creates in draft status. Warning shown if quantity exceeds stock, but doesn't block creation.
+
+### Update Wastage Status
+```http
+PUT /api/wastage/:uuid/status
+```
+**Auth:** Required (Staff+)
+
+**Body:**
+```json
+{
+  "status": "approved"
+}
+```
+
+**Important:**
+- Status change to "approved" triggers stock deduction
+- Validates stock availability before allowing approval
+- Returns detailed error if insufficient stock
+- Cannot change status of already approved wastage
+- Trigger automatically deducts stock on approval
+
+### Get Wastage Summary
+```http
+GET /api/wastage/summary?from_date=2025-01-01&to_date=2025-12-31&location_uuid=loc_main
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "summary": {
+    "total_records": 50,
+    "approved_count": 40,
+    "draft_count": 10,
+    "damage_count": 20,
+    "expiry_count": 15,
+    "spoilage_count": 10,
+    "other_count": 5
+  },
+  "top_wasted_products": [
+    {
+      "product_name": "Rice - Basmati",
+      "sku": "RICE001",
+      "unit": "kg",
+      "total_quantity": 100,
+      "wastage_count": 5
+    }
+  ]
+}
+```
+
+### Delete Wastage Record
+```http
+DELETE /api/wastage/:uuid
+```
+**Auth:** Required (Staff+)
+**Note:** Cannot delete approved wastage records
+
+---
+
+## **Total API Endpoints: 65+**
 
 - Authentication: 7
 - Products: 10
@@ -848,10 +979,11 @@ DELETE /api/invoices/:uuid
 - Issues: 6
 - Transfers: 5
 - Invoices: 7
+- Wastage: 6
 - Devices: 7
 - Sync: 4
 - Health: 3
-- **Coming Soon:** Wastage, Reports, Recipes, Settings, Locations
+- **Coming Soon:** Reports, Recipes, Settings, Locations
 
 ---
 
