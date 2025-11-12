@@ -22,6 +22,8 @@ const syncRoutes = require('./routes/sync');
 const healthRoutes = require('./routes/health');
 const productsRoutes = require('./routes/products');
 const purchasesRoutes = require('./routes/purchases');
+const issuesRoutes = require('./routes/issues');
+const transfersRoutes = require('./routes/transfers');
 
 // Initialize Express app
 const app = express();
@@ -84,6 +86,8 @@ app.use('/api/sync', syncRoutes);
 app.use('/api/admin/devices', deviceRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/purchases', purchasesRoutes);
+app.use('/api/issues', issuesRoutes);
+app.use('/api/transfers', transfersRoutes);
 
 // Root route
 app.get('/', (req, res) => {
