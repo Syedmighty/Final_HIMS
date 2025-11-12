@@ -164,9 +164,9 @@ sqlite3 hims.db "SELECT * FROM vw_active_alerts;"
 
 ### Database Stats
 
-- **Tables:** 30+
+- **Tables:** 26
 - **Views:** 8 (for reporting)
-- **Triggers:** 15+ (for automation)
+- **Triggers:** 12-15 (for automation, timestamp triggers handled by app layer)
 - **Indexes:** 50+ (for performance)
 - **Default Data:** Units, categories, locations, roles
 
@@ -324,11 +324,39 @@ For technical questions about the database:
 
 ## 📝 Changelog
 
+### v1.0.1 - 2025-11-12 (Production Hardening - CRITICAL UPDATE)
+
+**Fixed:**
+- ⚠️ **CRITICAL:** Removed broken timestamp triggers (SQLite syntax incompatibility)
+- Fixed trigger aggregation: `trg_after_issue_approved` now uses SUM() for correct multi-item handling
+- Fixed trigger aggregation: `trg_after_transfer_completed` now uses SUM() properly
+- Added `trg_before_transfer_check_stock` to prevent insufficient stock transfers
+- Added NULL safety to all triggers (COALESCE for modified_by fields)
+- Added NULL checks for foreign key fields (from_location_id, to_location_id)
+- Added HAVING clauses to GROUP BY statements to prevent zero-quantity logs
+- Added LIMIT 1 to EXISTS queries for performance
+- Fixed schema version to INSERT (not UPDATE) to preserve history
+- Fixed system user insertion to be idempotent (prevents duplicate key errors)
+- Fixed seed data unit conversion: 330ml can = 0.33L (was 330L!)
+
+**Changed:**
+- **BREAKING:** Applications MUST now explicitly set `last_modified` on UPDATE operations
+- Moved verification queries after COMMIT for accuracy
+- Improved error messages in triggers
+
+**Added:**
+- `CRITICAL_TIMESTAMP_ISSUE.md` - Essential reading for developers
+- `v1.0.1_CORRECTIONS_SUMMARY.md` - Complete list of fixes
+- `v1.0_to_v1.0.1_migration_CORRECTED.sql` - Production-ready migration script
+
+**Database Status:** ✅ Production Ready (requires app code updates for timestamps)
+**Urgency:** HIGH - Apply within 30 days, update apps first
+
 ### v1.0.0 - 2025-11-11 (Database Release)
 
 **Added:**
-- Complete database schema with 30+ tables
-- 15+ automated triggers for stock management
+- Complete database schema with 26 tables
+- 15 automated triggers for stock management
 - Unit conversion system with `unit_conversions` table
 - Batch tracking with `product_batches` and expiry alerts
 - Role-based access control (RBAC) with 4 default roles
@@ -339,7 +367,7 @@ For technical questions about the database:
 - Seed data with 50+ test records
 - Full documentation in database/README.md
 
-**Database Status:** ✅ Production Ready
+**Database Status:** ⚠️ Superseded by v1.0.1
 
 ---
 
