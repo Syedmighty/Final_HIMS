@@ -24,6 +24,7 @@ const productsRoutes = require('./routes/products');
 const purchasesRoutes = require('./routes/purchases');
 const issuesRoutes = require('./routes/issues');
 const transfersRoutes = require('./routes/transfers');
+const invoicesRoutes = require('./routes/invoices');
 
 // Initialize Express app
 const app = express();
@@ -88,6 +89,7 @@ app.use('/api/products', productsRoutes);
 app.use('/api/purchases', purchasesRoutes);
 app.use('/api/issues', issuesRoutes);
 app.use('/api/transfers', transfersRoutes);
+app.use('/api/invoices', invoicesRoutes);
 
 // Root route
 app.get('/', (req, res) => {
