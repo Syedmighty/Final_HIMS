@@ -1088,7 +1088,200 @@ DELETE /api/locations/:uuid
 
 ---
 
-## **Total API Endpoints: 71+**
+## **12. Recipes** (7 endpoints)
+
+### List Recipes
+```http
+GET /api/recipes?active_only=true&search=chicken
+```
+**Auth:** Required
+
+**Query Parameters:**
+- `active_only`: Filter active recipes only
+- `search`: Search by recipe name
+
+**Response includes:**
+- Recipe details with yield information
+- Ingredients count per recipe
+- Profit margin calculation
+
+### Get Recipe
+```http
+GET /api/recipes/:uuid
+```
+**Auth:** Required
+
+**Response includes:**
+- Recipe details with all ingredients
+- Ingredient costs breakdown
+- Total cost calculation
+- Profit analysis
+
+**Response:**
+```json
+{
+  "success": true,
+  "recipe": {
+    "uuid": "rec_001",
+    "name": "Chicken Curry",
+    "yield_quantity": 4,
+    "yield_unit": "portions",
+    "preparation_time": 45,
+    "cost_price": 150,
+    "selling_price": 250,
+    "profit_margin_percent": 40
+  },
+  "ingredients": [
+    {
+      "product_name": "Chicken",
+      "quantity": 500,
+      "unit": "g",
+      "product_cost_price": 200,
+      "ingredient_cost": 100
+    }
+  ],
+  "cost_breakdown": {
+    "calculated_cost": 150,
+    "stored_cost": 150,
+    "selling_price": 250,
+    "profit_amount": 100,
+    "profit_margin_percent": 40
+  }
+}
+```
+
+### Create Recipe
+```http
+POST /api/recipes
+```
+**Auth:** Required (Staff+)
+
+**Body:**
+```json
+{
+  "name": "Chicken Curry",
+  "description": "Spicy chicken curry with rice",
+  "yield_quantity": 4,
+  "yield_unit_id": 5,
+  "preparation_time": 45,
+  "selling_price": 250,
+  "ingredients": [
+    {
+      "product_uuid": "prod_chicken",
+      "quantity": 500,
+      "unit_id": 2,
+      "notes": "Boneless"
+    },
+    {
+      "product_uuid": "prod_rice",
+      "quantity": 200,
+      "unit_id": 2,
+      "notes": "Basmati"
+    }
+  ]
+}
+```
+
+**Important:**
+- Cost is automatically calculated from ingredient prices
+- At least one ingredient required
+- Ingredients must reference valid products
+
+### Update Recipe
+```http
+PUT /api/recipes/:uuid
+```
+**Auth:** Required (Staff+)
+
+**Body:**
+```json
+{
+  "name": "Updated Chicken Curry",
+  "description": "New description",
+  "yield_quantity": 6,
+  "selling_price": 300,
+  "is_active": true,
+  "ingredients": [
+    {
+      "product_uuid": "prod_chicken",
+      "quantity": 750,
+      "unit_id": 2
+    }
+  ]
+}
+```
+
+**Note:** If ingredients array is provided, all existing ingredients are replaced and cost is recalculated
+
+### Recalculate Recipe Cost
+```http
+POST /api/recipes/:uuid/recalculate-cost
+```
+**Auth:** Required (Staff+)
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Recipe cost recalculated successfully",
+  "old_cost": 150,
+  "new_cost": 175,
+  "difference": 25
+}
+```
+
+**Use Case:** When ingredient prices change, use this to update recipe costs based on current market prices
+
+### Get Profitability Analysis
+```http
+GET /api/recipes/profitability
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "summary": {
+    "total_recipes": 50,
+    "high_profit_count": 20,
+    "medium_profit_count": 15,
+    "low_profit_count": 10,
+    "lossmaking_count": 5,
+    "average_margin": 35.5
+  },
+  "high_profit_recipes": [
+    {
+      "uuid": "rec_001",
+      "name": "Premium Dish",
+      "cost_price": 100,
+      "selling_price": 250,
+      "profit_amount": 150,
+      "profit_margin_percent": 60,
+      "ingredients_count": 5
+    }
+  ],
+  "low_profit_recipes": []
+}
+```
+
+**Profitability Categories:**
+- High Profit: ≥40% margin
+- Medium Profit: 20-39% margin
+- Low Profit: 1-19% margin
+- Lossmaking: ≤0% margin
+
+### Delete Recipe
+```http
+DELETE /api/recipes/:uuid
+```
+**Auth:** Required (Staff+)
+
+**Note:** CASCADE deletes all recipe ingredients
+
+---
+
+## **Total API Endpoints: 78+**
 
 - Authentication: 7
 - Products: 10
@@ -1098,10 +1291,11 @@ DELETE /api/locations/:uuid
 - Invoices: 7
 - Wastage: 6
 - Locations: 6
+- Recipes: 7
 - Devices: 7
 - Sync: 4
 - Health: 3
-- **Coming Soon:** Reports, Recipes, Settings
+- **Coming Soon:** Reports, Settings
 
 ---
 
