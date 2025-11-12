@@ -29,6 +29,7 @@ const wastageRoutes = require('./routes/wastage');
 const locationsRoutes = require('./routes/locations');
 const recipesRoutes = require('./routes/recipes');
 const reportsRoutes = require('./routes/reports');
+const settingsRoutes = require('./routes/settings');
 
 // Initialize Express app
 const app = express();
@@ -98,6 +99,7 @@ app.use('/api/wastage', wastageRoutes);
 app.use('/api/locations', locationsRoutes);
 app.use('/api/recipes', recipesRoutes);
 app.use('/api/reports', reportsRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Root route
 app.get('/', (req, res) => {

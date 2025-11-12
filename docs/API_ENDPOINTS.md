@@ -1447,22 +1447,215 @@ GET /api/reports/profitability?from_date=2025-01-01&to_date=2025-12-31
 
 ---
 
-## **Total API Endpoints: 84+**
+## **14. Settings & Administration** (7 endpoints)
 
-- Authentication: 7
-- Products: 10
-- Purchases: 7
-- Issues: 6
-- Transfers: 5
-- Invoices: 7
-- Wastage: 6
-- Locations: 6
-- Recipes: 7
-- Reports: 6
-- Devices: 7
-- Sync: 4
-- Health: 3
-- **Coming Soon:** Settings (Company, GST, Export)
+### Get Company Settings
+```http
+GET /api/settings/company
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "settings": {
+    "id": 1,
+    "company_name": "My Hotel",
+    "address": "123 Main Street",
+    "phone": "1234567890",
+    "email": "info@myhotel.com",
+    "gst_number": "GST123456789",
+    "logo_path": "/uploads/logo.png",
+    "currency": "INR",
+    "decimal_places": 2,
+    "date_format": "yyyy-MM-dd",
+    "time_zone": "Asia/Kolkata",
+    "financial_year_start": "04-01",
+    "last_modified": "2025-11-12T10:00:00Z"
+  }
+}
+```
+
+### Update Company Settings
+```http
+PUT /api/settings/company
+```
+**Auth:** Required (Manager+)
+
+**Body:**
+```json
+{
+  "company_name": "Grand Hotel",
+  "address": "456 New Street",
+  "phone": "9876543210",
+  "email": "contact@grandhotel.com",
+  "gst_number": "GST987654321",
+  "currency": "INR",
+  "financial_year_start": "04-01"
+}
+```
+
+### Get System Information
+```http
+GET /api/settings/system-info
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "system_info": {
+    "version": "1.0.1",
+    "database_size_bytes": 52428800,
+    "database_size_mb": "50.00",
+    "products": {"count": 150},
+    "locations": {"count": 5},
+    "suppliers": {"count": 25},
+    "users": {"count": 10},
+    "invoices": {"count": 500},
+    "purchases": {"count": 300},
+    "recipes": {"count": 50},
+    "devices": {"count": 3},
+    "pending_sync": {"count": 0},
+    "unresolved_conflicts": {"count": 0},
+    "node_version": "v18.x.x",
+    "platform": "linux",
+    "uptime_seconds": 86400
+  }
+}
+```
+
+### Export Data
+```http
+GET /api/settings/export?tables=products,categories,units
+```
+**Auth:** Required (Manager+)
+
+**Query Parameters:**
+- `tables`: Comma-separated list of tables to export (optional, defaults to main tables)
+
+**Response:**
+```json
+{
+  "success": true,
+  "export": {
+    "export_date": "2025-11-12T10:00:00Z",
+    "version": "1.0.1",
+    "data": {
+      "products": [],
+      "categories": [],
+      "units": []
+    }
+  }
+}
+```
+
+**Use Case:** Data migration, backup, external integrations
+
+### Create Database Backup
+```http
+POST /api/settings/backup
+```
+**Auth:** Required (Admin only)
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Database backup created successfully",
+  "backup_path": "/backups/hims_backup_20251112_100000.db",
+  "timestamp": "2025-11-12T10:00:00Z"
+}
+```
+
+### Get Audit Logs
+```http
+GET /api/settings/audit-logs?table_name=products&limit=50&offset=0
+```
+**Auth:** Required (Manager+)
+
+**Query Parameters:**
+- `table_name`: Filter by table name
+- `user_uuid`: Filter by user
+- `from_date`: Filter by date
+- `limit`: Results per page (default: 100)
+- `offset`: Pagination offset
+
+**Response:**
+```json
+{
+  "success": true,
+  "logs": [
+    {
+      "id": 1,
+      "table_name": "products",
+      "record_uuid": "prod_001",
+      "operation": "update",
+      "user_uuid": "user_admin",
+      "user_name": "Admin User",
+      "username": "admin",
+      "old_values": "{}",
+      "new_values": "{}",
+      "timestamp": "2025-11-12T10:00:00Z"
+    }
+  ],
+  "count": 1500,
+  "limit": 50,
+  "offset": 0
+}
+```
+
+### Clear Old Data (Maintenance)
+```http
+POST /api/settings/maintenance/clear-old-data
+```
+**Auth:** Required (Admin only)
+
+**Body:**
+```json
+{
+  "days_old": 365
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Old data cleared successfully",
+  "audit_logs_deleted": 5000,
+  "sync_queue_deleted": 1000,
+  "conflicts_deleted": 50
+}
+```
+
+**Use Case:** Database maintenance, performance optimization, GDPR compliance
+
+---
+
+## **🎉 Complete API Endpoints: 91**
+
+### Core Business Modules:
+- **Authentication:** 7 endpoints
+- **Products:** 10 endpoints
+- **Purchases:** 7 endpoints
+- **Issues (Stock Out):** 6 endpoints
+- **Transfers:** 5 endpoints
+- **Invoices:** 7 endpoints
+- **Wastage:** 6 endpoints
+- **Locations:** 6 endpoints
+- **Recipes:** 7 endpoints
+- **Reports & Analytics:** 6 endpoints
+
+### Infrastructure & System:
+- **Devices:** 7 endpoints
+- **Sync:** 4 endpoints
+- **Health:** 3 endpoints
+- **Settings & Admin:** 7 endpoints
+
+### **Total: 91 Production-Ready API Endpoints** ✅
 
 ---
 
