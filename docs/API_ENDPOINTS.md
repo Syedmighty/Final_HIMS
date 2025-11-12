@@ -1281,7 +1281,173 @@ DELETE /api/recipes/:uuid
 
 ---
 
-## **Total API Endpoints: 78+**
+## **13. Reports & Analytics** (6 endpoints)
+
+### Dashboard Summary
+```http
+GET /api/reports/dashboard
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "sales_today": {
+    "invoices_count": 15,
+    "total_revenue": 50000
+  },
+  "sales_this_month": {
+    "invoices_count": 450,
+    "total_revenue": 1500000
+  },
+  "low_stock_alerts": 25,
+  "pending_purchases": {
+    "count": 5,
+    "total_amount": 100000
+  },
+  "total_stock_value": 500000,
+  "recent_activities": []
+}
+```
+
+**Use Case:** Main dashboard for real-time business overview
+
+### Sales Report
+```http
+GET /api/reports/sales?from_date=2025-01-01&to_date=2025-12-31
+```
+**Auth:** Required
+
+**Query Parameters:**
+- `from_date`, `to_date`: YYYY-MM-DD
+- `location_uuid`: Filter by location
+
+**Response:**
+```json
+{
+  "success": true,
+  "summary": {
+    "total_invoices": 500,
+    "unique_customers": 200,
+    "total_revenue": 2500000,
+    "subtotal": 2380952,
+    "total_gst": 119048,
+    "total_discount": 50000,
+    "average_invoice_value": 5000,
+    "cash_invoices": 300,
+    "credit_invoices": 200,
+    "paid_amount": 2300000,
+    "pending_amount": 200000
+  },
+  "sales_by_date": [],
+  "top_selling_products": [],
+  "payment_type_summary": []
+}
+```
+
+### Stock Valuation Report
+```http
+GET /api/reports/stock-valuation?location_uuid=loc_main
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "summary": {
+    "total_products": 150,
+    "total_quantity": 10000,
+    "total_cost_value": 500000,
+    "total_selling_value": 750000,
+    "potential_profit": 250000
+  },
+  "by_location": [],
+  "top_value_products": []
+}
+```
+
+### Low Stock Alert Report
+```http
+GET /api/reports/low-stock?location_uuid=loc_main
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "summary": {
+    "total_low_stock": 25,
+    "critical_stock": 5,
+    "out_of_stock": 10,
+    "total_alerts": 35,
+    "estimated_reorder_cost": 150000
+  },
+  "low_stock_items": [],
+  "critical_stock_items": [],
+  "out_of_stock_items": []
+}
+```
+
+**Use Case:** Inventory replenishment planning
+
+### Purchase Report
+```http
+GET /api/reports/purchases?from_date=2025-01-01&supplier_uuid=sup_001
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "summary": {
+    "total_purchases": 100,
+    "unique_suppliers": 20,
+    "total_amount": 1000000,
+    "total_gst": 50000,
+    "average_purchase_value": 10000,
+    "received_count": 90,
+    "draft_count": 5,
+    "ordered_count": 5
+  },
+  "by_supplier": [],
+  "top_purchased_products": []
+}
+```
+
+### Profitability Report
+```http
+GET /api/reports/profitability?from_date=2025-01-01&to_date=2025-12-31
+```
+**Auth:** Required
+
+**Response:**
+```json
+{
+  "success": true,
+  "summary": {
+    "total_invoices": 500,
+    "total_revenue": 2500000,
+    "subtotal": 2380952,
+    "total_gst": 119048,
+    "total_estimated_cost": 1500000,
+    "total_estimated_profit": 1000000,
+    "estimated_profit_margin": "40.00"
+  },
+  "product_profitability": [],
+  "best_performers": [],
+  "worst_performers": []
+}
+```
+
+**Note:** Uses product cost prices for profit estimation. Actual profits may vary based on stock valuation method.
+
+---
+
+## **Total API Endpoints: 84+**
 
 - Authentication: 7
 - Products: 10
@@ -1292,10 +1458,11 @@ DELETE /api/recipes/:uuid
 - Wastage: 6
 - Locations: 6
 - Recipes: 7
+- Reports: 6
 - Devices: 7
 - Sync: 4
 - Health: 3
-- **Coming Soon:** Reports, Settings
+- **Coming Soon:** Settings (Company, GST, Export)
 
 ---
 
