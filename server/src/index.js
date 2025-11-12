@@ -16,9 +16,12 @@ const { initDatabase, closeDatabase, integrityCheck } = require('./config/databa
 const logger = require('./config/logger');
 
 // Import routes
+const authRoutes = require('./routes/auth');
 const deviceRoutes = require('./routes/devices');
 const syncRoutes = require('./routes/sync');
 const healthRoutes = require('./routes/health');
+const productsRoutes = require('./routes/products');
+const purchasesRoutes = require('./routes/purchases');
 
 // Initialize Express app
 const app = express();
@@ -75,9 +78,12 @@ app.use('/api/', limiter);
 // ============================================================================
 
 app.use('/api/health', healthRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/devices', deviceRoutes);
 app.use('/api/sync', syncRoutes);
 app.use('/api/admin/devices', deviceRoutes);
+app.use('/api/products', productsRoutes);
+app.use('/api/purchases', purchasesRoutes);
 
 // Root route
 app.get('/', (req, res) => {
